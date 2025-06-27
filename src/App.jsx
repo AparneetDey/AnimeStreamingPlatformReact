@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import Search from './components/Search'
-import { useDebounce } from 'use-debounce';
+import React, { useEffect, useState } from 'react';
+import Search from './components/Search';
+import Spinner from './components/spinner';
+import AnimeCard from './components/AnimeCard';
+import { useDebounce } from 'react-use';
 
 const API_BASE_URL = "https://api.jikan.moe/v4"
 
@@ -12,15 +14,26 @@ const  API_OPTIONS = {
 }
 
 const App = () => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [animeList, setAnimeList] = useState([]);
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('')
   const [errorMessage, setErrorMessage] = useState('');
-  const [anime, setAnime] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  useDebounce( () => 
+    setDebouncedSearchTerm(searchTerm),
+     500, 
+    [searchTerm]
+  );
 
-  const fetchAnime = async () => {
+  const fetchAnime = async (query) => {
+    setIsLoading(true);
+    setErrorMessage('');
+
     try {
-      const endpoint = `${API_BASE_URL}/top/anime`;
+      const endpoint = query 
+      ? `${API_BASE_URL}/anime?q=${encodeURIComponent(query)}`
+      : `${API_BASE_URL}/top/anime?filter=bypopularity&sort=desc`;
 
       const response = await fetch(endpoint, API_OPTIONS);
 
@@ -29,34 +42,53 @@ const App = () => {
       }
 
       const data = await response.json();
-      console.log(data);
+      
+      if(!data.data || data.data.length === 0) {
+        setErrorMessage(data.Error || 'No anime found!');
+        setAnimeList([]);
+        return;
+      }
+
+      setAnimeList(data.data);
 
     } catch (error) {
       console.log(`Error fetching anime: ${error}`);
       setErrorMessage('Error fetching anime! Please try again later.');
+    } finally {
+      setIsLoading(false);
     }
   }
 
   useEffect(() => {
-    fetchAnime();
-  }, []);
+    fetchAnime(debouncedSearchTerm);
+  }, [debouncedSearchTerm]);
 
   return (
     <main>
       <div className='pattern' />
-      {/* <img src="/BG.png" alt="banner" className='absolute'/> */}
 
       <div className='wrapper'>
         <header>
           <img src="/hero.png" alt="Hero Banner" className='text-white'/>
-          <h1>Find The <span className='text-gradient'>Movies</span> That You Love Without Any Hassle</h1>
+          <h1>Find The <span className='text-gradient'>Animes</span> That You Love Without Any Hassle</h1>
 
           <Search searchTerm = {searchTerm} setSearchTerm = {setSearchTerm} />
         </header>
 
-        <section className='all-movies'>
-          <h2>All Movies</h2>
-          {errorMessage && <p className='text-red-500'>{errorMessage}</p>}
+        <section className='all-animes'>
+          <h2 className='mt-[40px]'>Popular Animes</h2>
+          
+          {isLoading ? (
+            <Spinner />
+          ): errorMessage ? (
+            <p className='text-red-500'>{errorMessage}</p>
+          ): (
+            <ul>
+              {animeList.map((anime) => (
+                <AnimeCard key = {anime.mal_id} anime = {anime} />
+              ))}
+            </ul>
+          )}
         </section>
       </div>
     </main>
