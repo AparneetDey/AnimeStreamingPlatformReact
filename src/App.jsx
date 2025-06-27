@@ -3,6 +3,7 @@ import Search from './components/Search';
 import Spinner from './components/spinner';
 import AnimeCard from './components/AnimeCard';
 import { useDebounce } from 'react-use';
+import { updateSearchCount, fetchTest } from './appwrite.js'
 
 const API_BASE_URL = "https://api.jikan.moe/v4"
 
@@ -22,7 +23,7 @@ const App = () => {
 
   useDebounce( () => 
     setDebouncedSearchTerm(searchTerm),
-     500, 
+     700, 
     [searchTerm]
   );
 
@@ -51,6 +52,10 @@ const App = () => {
 
       setAnimeList(data.data);
 
+      if(query && data.data.length > 0){
+        await updateSearchCount(searchTerm, data.data[0]);
+      }
+      
     } catch (error) {
       console.log(`Error fetching anime: ${error}`);
       setErrorMessage('Error fetching anime! Please try again later.');
@@ -62,6 +67,10 @@ const App = () => {
   useEffect(() => {
     fetchAnime(debouncedSearchTerm);
   }, [debouncedSearchTerm]);
+
+  useEffect( () => {
+    fetchTest();
+  }, []);
 
   return (
     <main>
