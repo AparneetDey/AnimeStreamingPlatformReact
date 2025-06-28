@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import Search from './components/Search';
 import Spinner from './components/spinner';
 import AnimeCard from './components/AnimeCard';
-import { useDebounce } from 'react-use';
-import { updateSearchCount, fetchTest } from './appwrite.js'
+import { useDebounce, useStateList } from 'react-use';
+import { updateSearchCount, getTrendingAnimes } from './appwrite.js'
 
 const API_BASE_URL = "https://api.jikan.moe/v4"
 
-const  API_OPTIONS = {
+const API_OPTIONS = {
   method: "GET",
   headers: {
     accept: "application/json",
@@ -15,52 +15,70 @@ const  API_OPTIONS = {
 }
 
 const App = () => {
+  const [animeErrorMessage, setAnimeErrorMessage] = useState('');
   const [animeList, setAnimeList] = useState([]);
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('')
-  const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [trendingAnimes, setTrendingAnimes] = useState([])
+  const [trendErrorMessage, setTrendErrorMessage] = useState('');
 
-  useDebounce( () => 
+  useDebounce(() =>
     setDebouncedSearchTerm(searchTerm),
-     700, 
+    700,
     [searchTerm]
   );
 
   const fetchAnime = async (query) => {
     setIsLoading(true);
-    setErrorMessage('');
+    setAnimeErrorMessage('');
 
     try {
-      const endpoint = query 
-      ? `${API_BASE_URL}/anime?q=${encodeURIComponent(query)}`
-      : `${API_BASE_URL}/top/anime?filter=bypopularity&sort=desc`;
+      const endpoint = query
+        ? `${API_BASE_URL}/anime?q=${encodeURIComponent(query)}`
+        : `${API_BASE_URL}/top/anime?filter=bypopularity&sort=desc`;
 
       const response = await fetch(endpoint, API_OPTIONS);
 
-      if(!response.ok) {
+      if (!response.ok) {
         throw new Error('Error fetching anime!');
       }
 
       const data = await response.json();
-      
-      if(!data.data || data.data.length === 0) {
-        setErrorMessage(data.Error || 'No anime found!');
+
+      if (!data.data || data.data.length === 0) {
+        setAnimeErrorMessage(data.Error || 'No anime found!');
         setAnimeList([]);
         return;
       }
 
       setAnimeList(data.data);
 
-      if(query && data.data.length > 0){
+      if (query && data.data.length > 0) {
         await updateSearchCount(searchTerm, data.data[0]);
       }
-      
+
     } catch (error) {
       console.log(`Error fetching anime: ${error}`);
-      setErrorMessage('Error fetching anime! Please try again later.');
+      setAnimeErrorMessage('Error fetching anime! Please try again later.');
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  const loadTrendingAnimes = async () => {
+    setIsLoading(true);
+    setTrendErrorMessage('');
+
+    try {
+      const animes = await getTrendingAnimes();
+
+      setTrendingAnimes(animes);
+    } catch (error) {
+      console.log(`Error loading trending animes: ${error}`);
+      setTrendErrorMessage('Error loading trending animes!');
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -68,9 +86,10 @@ const App = () => {
     fetchAnime(debouncedSearchTerm);
   }, [debouncedSearchTerm]);
 
-  useEffect( () => {
-    fetchTest();
-  }, []);
+  useEffect(() => {
+    loadTrendingAnimes()
+  }, [])
+
 
   return (
     <main>
@@ -78,23 +97,45 @@ const App = () => {
 
       <div className='wrapper'>
         <header>
-          <img src="/hero.png" alt="Hero Banner" className='text-white'/>
+          <img src="/hero.png" alt="Hero Banner" className='text-white' />
           <h1>Find The <span className='text-gradient'>Animes</span> That You Love Without Any Hassle</h1>
 
-          <Search searchTerm = {searchTerm} setSearchTerm = {setSearchTerm} />
+          <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         </header>
 
+        {trendingAnimes.length > 0 && (
+          <section className='trending'>
+            <h2>Trending Animes</h2>
+
+            {isLoading ?
+              <Spinner />
+              : trendErrorMessage ? (
+                <p className='text-red-500'>{trendErrorMessage}</p>
+              ) : (
+                <ul>
+                  {trendingAnimes.map((anime, index) => (
+                    <li key={anime.$id}>
+                      <p>{index + 1}</p>
+                      <img src={anime.poster_url} alt={anime.title_english} />
+                    </li>
+                  ))}
+                </ul>
+              )
+            }
+          </section>
+        )}
+
         <section className='all-animes'>
-          <h2 className='mt-[40px]'>Popular Animes</h2>
-          
+          <h2>Popular Animes</h2>
+
           {isLoading ? (
             <Spinner />
-          ): errorMessage ? (
-            <p className='text-red-500'>{errorMessage}</p>
-          ): (
+          ) : animeErrorMessage ? (
+            <p className='text-red-500'>{animeErrorMessage}</p>
+          ) : (
             <ul>
               {animeList.map((anime) => (
-                <AnimeCard key = {anime.mal_id} anime = {anime} />
+                <AnimeCard key={anime.mal_id} anime={anime} />
               ))}
             </ul>
           )}
