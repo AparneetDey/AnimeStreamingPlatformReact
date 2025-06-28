@@ -103,7 +103,7 @@ const App = () => {
           <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         </header>
 
-        {trendingAnimes.length > 0 && (
+        {trendingAnimes.length > 0 && searchTerm == '' && (
           <section className='trending'>
             <h2>Trending Animes</h2>
 
@@ -126,7 +126,7 @@ const App = () => {
         )}
 
         <section className='all-animes'>
-          <h2>Popular Animes</h2>
+          <h2 className='mt-2'>Popular Animes</h2>
 
           {isLoading ? (
             <Spinner />
