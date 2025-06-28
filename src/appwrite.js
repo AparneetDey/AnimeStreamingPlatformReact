@@ -44,7 +44,6 @@ export const getTrendingAnimes = async () => {
             Query.orderDesc("count")
         ])
 
-        console.log(ENDPOINT)
         return result.documents;
     } catch (error) {
         console.log(`Error fetching trending movies: ${error}`);
