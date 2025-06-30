@@ -1,8 +1,9 @@
 import React from 'react'
+import { Link } from 'react-router'
 
-const AnimeCard = ( {anime: {title, title_english, images, episodes, score, genres}} ) => {
+const AnimeCard = ( {anime: { mal_id, title, title_english, images, episodes, score, genres}} ) => {
   return (
-    <div className='anime-card'>
+    <Link to={`/anime/${mal_id}`} className='anime-card'>
         <img 
         src={
             images.jpg.image_url ? images.jpg.image_url : '/no-movie.png'
@@ -27,7 +28,7 @@ const AnimeCard = ( {anime: {title, title_english, images, episodes, score, genr
 
             <p className='genre'>{genres[1] ? genres[1].name : 'N/A'}</p>
         </div>
-    </div>
+    </Link>
   )
 }
 

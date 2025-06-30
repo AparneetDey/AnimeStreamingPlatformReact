@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Search from './components/Search';
 import Spinner from './components/spinner';
 import AnimeCard from './components/AnimeCard';
-import { useDebounce, useStateList } from 'react-use';
+import { useDebounce } from 'react-use';
 import { updateSearchCount, getTrendingAnimes } from './appwrite.js'
 
 const API_BASE_URL = "https://api.jikan.moe/v4"
@@ -11,6 +11,22 @@ const API_OPTIONS = {
   method: "GET",
   headers: {
     accept: "application/json",
+  }
+}
+
+export const animeLoader = async ({ params }) => {
+  try {
+    const { animeId } = params;
+    const res = await fetch(`${API_BASE_URL}/anime/${animeId}`);
+
+    if (!res.ok){
+      throw new Error("Failed to fetch anime data");
+    }
+    const data = await res.json();
+
+    return data.data;
+  } catch (error) {
+    console.log(`Error fetching anime data: ${error}`);
   }
 }
 
@@ -51,6 +67,8 @@ const App = () => {
         setAnimeList([]);
         return;
       }
+
+      console.log(data.data);
 
       setAnimeList(data.data);
 
