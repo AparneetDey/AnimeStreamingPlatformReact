@@ -4,6 +4,7 @@ import Spinner from './components/spinner';
 import AnimeCard from './components/AnimeCard';
 import { useDebounce } from 'react-use';
 import { updateSearchCount, getTrendingAnimes } from './appwrite.js'
+import { Link } from 'react-router';
 
 const API_BASE_URL = "https://api.jikan.moe/v4"
 
@@ -19,11 +20,10 @@ export const animeLoader = async ({ params }) => {
     const { animeId } = params;
     const res = await fetch(`${API_BASE_URL}/anime/${animeId}`);
 
-    if (!res.ok){
+    if (!res.ok) {
       throw new Error("Failed to fetch anime data");
     }
     const data = await res.json();
-
     return data.data;
   } catch (error) {
     console.log(`Error fetching anime data: ${error}`);
@@ -134,7 +134,9 @@ const App = () => {
                   {trendingAnimes.map((anime, index) => (
                     <li key={anime.$id}>
                       <p>{index + 1}</p>
-                      <img src={anime.poster_url} alt={anime.title_english} />
+                      <Link to={`/anime/${anime.anime_id}`}>
+                        <img src={anime.poster_url} alt={anime.title_english} />
+                      </Link>
                     </li>
                   ))}
                 </ul>

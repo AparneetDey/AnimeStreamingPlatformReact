@@ -18,6 +18,10 @@
   --breakpoint-xs: 480px;
 
   --background-image-hero-pattern: url("/hero-bg.png");
+
+  --box-shadow-inner-preview: 0px 12px 32px 0px #CECEFB05 inset;
+
+  --box-shadow-outer-preview: 0px 0px 100px 0px #AB8BFF4D;
 }
 
 @layer base {
@@ -25,7 +29,8 @@
     font-family: "DM Sans", serif;
     font-optical-sizing: auto;
     background: #030014;
-    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
   }
 
   h1 {
@@ -141,6 +146,55 @@
       @apply text-gray-100 font-medium text-base;
     }
   }
+
+  .anime-preview{
+    @apply relative mx-4 my-8 min-height-small sm:min-height-large;
+  }
+
+  .anime-section{
+    @apply bg-[#0F0D23] py-4 px-4 w-full max-w-[1200px] max-h-[1234px] rounded-[14px] absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%];
+    box-shadow: var(--box-shadow-inner-preview), var(--box-shadow-outer-preview);
+  }
+
+  .content{
+    @apply  grid grid-cols-1 gap-[30px];
+
+    & img {
+      @apply rounded-lg h-auto w-full max-h-[441px] max-w-[302px];
+    }
+
+    & p {
+      @apply text-gray-100 font-medium text-sm;
+    }
+
+    & span {
+      @apply text-sm text-gray-100;
+    }
+
+    & .top{
+      @apply flex justify-between;
+    }
+
+    & .mid{
+      @apply flex flex-col gap-[26px] items-center sm:flex-row;
+    }
+
+    & .top .title{
+      @apply flex flex-col gap-2 sm:gap-3;
+    }
+
+    & .top .title div {
+      @apply flex items-center ;
+    }
+
+    & .top .rating {
+      @apply bg-[#221F3D] h-9 flex justify-center items-center px-2 sm:h-10.5 rounded-[6px]
+    }
+
+    & .top .rating img {
+      @apply size-4 object-contain;
+    }
+  }
 }
 
 @utility text-gradient {
@@ -160,4 +214,12 @@
   &::-webkit-scrollbar {
     display: none;
   }
+}
+
+@utility min-height-large{
+  min-height: calc(100vh - 64px);
+}
+
+@utility min-height-small{
+  min-height: calc(100vh + 96px);
 }
