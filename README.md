@@ -1,4 +1,4 @@
-# Anime Streaming Platform - React Learning Project
+# OtakuVerse - React Learning Project
 
 A modern anime discovery platform built with React, designed to help developers learn React fundamentals and modern web development practices.
 
