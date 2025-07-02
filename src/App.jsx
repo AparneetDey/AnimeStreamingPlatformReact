@@ -5,6 +5,7 @@ import AnimeCard from './components/AnimeCard';
 import { useDebounce } from 'react-use';
 import { updateSearchCount, getTrendingAnimes } from './appwrite.js'
 import { Link } from 'react-router';
+import ScrollToTop from './components/ScrollToTop.jsx';
 
 const API_BASE_URL = "https://api.jikan.moe/v4"
 
@@ -24,6 +25,13 @@ export const animeLoader = async ({ params }) => {
       throw new Error("Failed to fetch anime data");
     }
     const data = await res.json();
+
+    if(data.data){
+      const title = data.data.title_english ? data.data.title_english : data.data.title;
+      console.log("data saved")
+      updateSearchCount(title, data.data)
+    }
+
     return data.data;
   } catch (error) {
     console.log(`Error fetching anime data: ${error}`);
@@ -51,7 +59,7 @@ const App = () => {
 
     try {
       const endpoint = query
-        ? `${API_BASE_URL}/anime?q=${encodeURIComponent(query)}`
+        ? `${API_BASE_URL}/anime?q=${encodeURIComponent(query)}&filter=bypopularity&sort=desc`
         : `${API_BASE_URL}/top/anime?filter=bypopularity&sort=desc`;
 
       const response = await fetch(endpoint, API_OPTIONS);
@@ -68,13 +76,7 @@ const App = () => {
         return;
       }
 
-      console.log(data.data);
-
       setAnimeList(data.data);
-
-      if (query && data.data.length > 0) {
-        await updateSearchCount(searchTerm, data.data[0]);
-      }
 
     } catch (error) {
       console.log(`Error fetching anime: ${error}`);
@@ -111,6 +113,7 @@ const App = () => {
 
   return (
     <main>
+      <ScrollToTop />
       <div className='pattern' />
 
       <div className='wrapper'>

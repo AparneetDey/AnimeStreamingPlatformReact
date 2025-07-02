@@ -9,6 +9,7 @@ import {
 import './index.css'
 import App, { animeLoader } from './App.jsx'
 import AnimePreview from './pages/AnimePreview.jsx';
+import Spinner from './components/spinner.jsx';
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,9 @@ const router = createBrowserRouter([
     element: <AnimePreview />,
     loader: animeLoader
   },
+  {
+    HydrateFallback: <Spinner />
+  }
 ]);
 
 createRoot(document.getElementById('root')).render(

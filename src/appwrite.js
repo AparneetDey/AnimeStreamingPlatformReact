@@ -48,3 +48,19 @@ export const getTrendingAnimes = async () => {
         console.log(`Error fetching trending movies: ${error}`);
     }
 }
+
+export const getTrendCount = async (anime_id) => {
+    try {
+        const result = await database.listDocuments(DATABASE_ID, COLLECTION_ID, [
+            Query.equal('anime_id', anime_id)
+        ])
+        
+        if (result.total > 0){
+            return result.documents[0].count;
+        } else {
+            return 0;
+        }
+    } catch (error) {
+        console.log(`Error getting the trend count: ${error}`);
+    }
+}

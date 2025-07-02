@@ -2,6 +2,8 @@
 
 A modern anime discovery platform built with React, designed to help developers learn React fundamentals and modern web development practices.
 
+Users can now click on an anime to view a dedicated preview page with more details and a trailer.
+
 ## 🎯 Project Focus
 
 This project is primarily focused on **implementing and learning React** concepts including:
@@ -22,6 +24,7 @@ All designs, UI components, and project structure are based on the excellent tut
 - **Anime Search**: Search for anime titles with debounced search functionality
 - **Popular Anime Display**: Browse popular anime from the Jikan API
 - **Trending Section**: View trending anime based on search analytics
+- **Anime Preview Page**: Click on an anime to view a dedicated page with detailed information, ratings, and a trailer (if available)
 - **Responsive Design**: Modern, mobile-friendly UI built with Tailwind CSS
 - **Real-time Search**: Instant search results with loading states
 - **Search Analytics**: Track popular searches using Appwrite backend
@@ -33,6 +36,7 @@ All designs, UI components, and project structure are based on the excellent tut
 - **Backend**: Appwrite (Database & Analytics)
 - **API**: Jikan API (MyAnimeList data)
 - **Utilities**: react-use
+- **Icons**: FontAwesome (for UI icons in preview page)
 - **Development**: ESLint, Hot Module Replacement
 
 ## 🚀 Getting Started
@@ -78,11 +82,16 @@ src/
 ├── components/
 │   ├── AnimeCard.jsx      # Individual anime display component
 │   ├── Search.jsx         # Search input component
-│   └── spinner.jsx        # Loading spinner component
+│   ├── spinner.jsx        # Loading spinner component
+│   ├── HomeButton.jsx     # Button to return to home page
+│   ├── AnimeDetails.jsx   # Detailed anime info section
+│   └── ScrollToTop.jsx    # Scroll restoration component
+├── pages/
+│   └── AnimePreview.jsx   # Detailed anime preview page
 ├── App.jsx                # Main application component
-├── appwrite.js           # Appwrite backend integration
-├── main.jsx              # Application entry point
-└── index.css             # Global styles
+├── appwrite.js            # Appwrite backend integration
+├── main.jsx               # Application entry point
+└── index.css              # Global styles
 ```
 
 ## 🎓 Learning Objectives

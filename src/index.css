@@ -31,6 +31,8 @@
     background: #030014;
     margin: 0;
     padding: 0;
+    min-height: 100dvh;
+    overflow-x: hidden;
   }
 
   h1 {
@@ -148,11 +150,11 @@
   }
 
   .anime-preview{
-    @apply relative mx-4 my-8 min-height-small sm:min-height-large;
+    @apply px-4 py-8 flex justify-center items-center min-h-screen;
   }
 
   .anime-section{
-    @apply bg-[#0F0D23] py-4 px-4 w-full max-w-[1200px] max-h-[1234px] rounded-[14px] absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%];
+    @apply bg-[#0F0D23] py-4 px-4 w-full max-w-[1200px] rounded-[14px];
     box-shadow: var(--box-shadow-inner-preview), var(--box-shadow-outer-preview);
   }
 
@@ -178,6 +180,10 @@
     & .mid{
       @apply flex flex-col gap-[26px] items-center sm:flex-row;
     }
+    
+    & .bot{
+      @apply flex justify-between flex-col gap-4 sm:flex-row;
+    }
 
     & .top .title{
       @apply flex flex-col gap-2 sm:gap-3;
@@ -188,11 +194,31 @@
     }
 
     & .top .rating {
-      @apply bg-[#221F3D] h-9 flex justify-center items-center px-2 sm:h-10.5 rounded-[6px]
+      
     }
 
-    & .top .rating img {
+    & .top .rating div {
+      @apply bg-[#221F3D] h-9 flex justify-center items-center gap-[6px] py-2 px-4 sm:h-10.5 rounded-[6px];
+    }
+
+    & .top .rating div img {
       @apply size-4 object-contain;
+    }
+
+    & .mid div {
+      @apply w-full h-full min-h-[200px] bg-[#080526] rounded-xl flex justify-center items-center text-2xl text-white;
+    }
+
+    & .bot .home-btn {
+      @apply max-w-[186px] h-[44px] py-[8px] px-[20px] bg-linear-to-r from-[#D6C7FF] to-[#AB8BFF] flex gap-[4px] items-center rounded-[6px];
+    }
+
+    & .bot .label {
+      @apply text-[#A8B5DB] self-start;
+    }
+
+    & .bot .genres {
+      @apply py-[8px] px-[18px] bg-[#221F3D] rounded-[6px] text-white text-center ;
     }
   }
 }
@@ -214,12 +240,4 @@
   &::-webkit-scrollbar {
     display: none;
   }
-}
-
-@utility min-height-large{
-  min-height: calc(100vh - 64px);
-}
-
-@utility min-height-small{
-  min-height: calc(100vh + 96px);
 }
