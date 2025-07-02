@@ -138,7 +138,7 @@ const App = () => {
                     <li key={anime.$id}>
                       <p>{index + 1}</p>
                       <Link to={`/anime/${anime.anime_id}`}>
-                        <img src={anime.poster_url} alt={anime.title_english} />
+                        <img src={anime.poster_url} alt={anime.searchTerm} />
                       </Link>
                     </li>
                   ))}
