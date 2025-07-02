@@ -19,7 +19,6 @@ const formatNumber = (num) => {
 
 const AnimePreview = () => {
   const anime = useLoaderData();
-  console.log(anime);
   const { title, title_english, year, mal_id, episodes, score, scored_by, rating, images, trailer } = anime;
 
   const [trendCount, setTrendCount] = useState(0);

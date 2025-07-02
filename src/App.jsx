@@ -28,7 +28,6 @@ export const animeLoader = async ({ params }) => {
 
     if(data.data){
       const title = data.data.title_english ? data.data.title_english : data.data.title;
-      console.log("data saved")
       updateSearchCount(title, data.data)
     }
 
